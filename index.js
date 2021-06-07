@@ -94,6 +94,15 @@ app.delete('/api/persons/:id', (req, res) => {
   res.status(204).end();
 });
 
+app.patch('/api/persons/:id', (req, res) => {
+  const id = Number(req.params.id);
+  const { number } = req.body;
+  persons = persons.map(person => person.id !== id ? person : {
+    ...person,
+    number
+  })
+  res.status(201).json(persons.find(person => person.id === id))
+})
 app.listen(PORT, () => {
   console.log(`Server listening on ${PORT}`);
 });
