@@ -1,0 +1,6 @@
+PATCH http://localhost:3100/api/persons/60bfa8bc6cdecf147c2c143d HTTP/1.1
+Content-Type: application/json
+
+{
+  "number": 600600600
+}
