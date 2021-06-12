@@ -1,15 +1,15 @@
-const mongoose = require('mongoose');
-const uniqueValidator = require('mongoose-unique-validator');
+const mongoose = require('mongoose')
+const uniqueValidator = require('mongoose-unique-validator')
 
-const MONGO_URL = process.env.MONGO_URL;
+const MONGO_URL = process.env.MONGO_URL
 
 const options = {
   useNewUrlParser: true,
   useUnifiedTopology: true,
   useFindAndModify: false,
   useCreateIndex: true,
-};
-mongoose.connect(MONGO_URL, options);
+}
+mongoose.connect(MONGO_URL, options)
 
 const personSchema = new mongoose.Schema({
   name: {
@@ -23,8 +23,8 @@ const personSchema = new mongoose.Schema({
     require: true,
     type: String,
   },
-});
+})
 
-personSchema.plugin(uniqueValidator);
+personSchema.plugin(uniqueValidator)
 
-module.exports = mongoose.model('Person', personSchema);
+module.exports = mongoose.model('Person', personSchema)
