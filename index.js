@@ -21,7 +21,9 @@ app.use(
 
 app.get('/api/info', async (req, res, next) => {
   const date = new Date();
-  const people = await Person.find({}).then(persons => persons.length).catch(err => next(err))
+  const people = await Person.find({})
+    .then((persons) => persons.length)
+    .catch((err) => next(err));
   const info = `
   Phonebook has info for ${people} people
   </br>
@@ -33,8 +35,8 @@ app.get('/api/info', async (req, res, next) => {
 
 app.get('/api/persons', (req, res, next) => {
   Person.find({})
-    .then(persons => res.json(persons))
-    .catch(err => next(err))
+    .then((persons) => res.json(persons))
+    .catch((err) => next(err));
 });
 
 app.post('/api/persons', (req, res, next) => {
@@ -49,61 +51,60 @@ app.post('/api/persons', (req, res, next) => {
       error: 'content missing',
     });
 
-  Person.findOne({ name: person.name }).then(data => {
-    if (data) {
-      return res.status(409).json({
-        error: 'name must be unique'
-      })
-    }
+  const newPerson = new Person({
+    ...person,
+  });
 
-    const newPerson = new Person({
-      ...person
-    });
-
-    newPerson.save().then(person => {
+  newPerson
+    .save()
+    .then((person) => {
       res.json(person);
-    }).catch(err => next(err))
-  }).catch(err => next(err))
+    })
+    .catch((err) => next(err));
 });
 
 app.get('/api/persons/:id', (req, res, next) => {
   const { id } = req.params;
 
   Person.findById(id)
-    .then(person => {
+    .then((person) => {
       if (!person) return res.status(404).end();
 
       res.json(person);
     })
-    .catch(err => next(err))
+    .catch((err) => next(err));
 });
 
 app.delete('/api/persons/:id', (req, res, next) => {
   const { id } = req.params;
 
-  Person.findByIdAndDelete(id).then(result => {
-    res.status(204).end();
-  }).catch(err => next(err))
+  Person.findByIdAndDelete(id)
+    .then((result) => {
+      res.status(204).end();
+    })
+    .catch((err) => next(err));
 });
 
 app.patch('/api/persons/:id', (req, res, next) => {
   const { id } = req.params;
   const { number } = req.body;
 
-  Person.findByIdAndUpdate(id, { number }).then(oldPerson => {
-    res.status(201).json(oldPerson)
-  }).catch(err => next(err))
-})
+  Person.findByIdAndUpdate(id, { number })
+    .then((oldPerson) => {
+      res.status(201).json(oldPerson);
+    })
+    .catch((err) => next(err));
+});
 
 const errorHandler = (err, req, res, next) => {
-
-  console.error(err)
   if (err.name === 'CastError')
-    return res.status(400).send({ error: 'malformatted id' })
-  next(err)
-}
+    return res.status(400).send({ error: 'malformatted id' });
+  if (err.name === 'ValidationError')
+    return res.status(400).send({ error: 'name must be unique' });
+  next(err);
+};
 
-app.use(errorHandler)
+app.use(errorHandler);
 app.listen(PORT, () => {
   console.log(`Server listening on ${PORT}`);
 });
